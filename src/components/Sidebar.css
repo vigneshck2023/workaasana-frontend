@@ -1,0 +1,150 @@
+* {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* sidebar container */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background-color: #f5f4ff;
+  padding: 20px 15px;
+  transition: width 0.3s ease;
+  position: fixed;
+  overflow: hidden;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.top-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.logo {
+  color: #6c4bf4;
+  font-size: 1.6rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .logo {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle-icon {
+  cursor: pointer;
+  font-size: 22px;
+  color: #6c4bf4;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon:hover {
+  transform: rotate(90deg);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #4b4b4b;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  font-size: 15px;
+}
+
+.menu-item:hover {
+  background-color: #ebe8ff;
+  color: #6c4bf4;
+}
+
+.menu-item .icon {
+  font-size: 1.3rem;
+  min-width: 24px;
+  margin-right: 10px;
+}
+
+.sidebar.collapsed .menu-item span {
+  display: none;
+}
+
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* tooltip on collapsed hover */
+.sidebar.collapsed .menu-item:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #6c4bf4;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  font-size: 13px;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+/* main content styling */
+.main-content {
+  flex: 1;
+  padding: 25px;
+  transition: margin-left 0.3s ease;
+  margin-left: 220px;
+}
+
+.main-content.collapsed {
+  margin-left: 70px;
+}
+
+/* search bar */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 8px 12px;
+  width: 320px;
+  transition: width 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  margin-left: 8px;
+  width: 100%;
+  font-size: 15px;
+  background: transparent;
+}
+
+.search-icon {
+  color: #888;
+  font-size: 17px;
+}
