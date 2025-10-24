@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   FaBars,
   FaHome,
@@ -7,6 +7,7 @@ import {
   FaChartBar,
   FaCog,
 } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -16,6 +17,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <div className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
+      {/* Top Section */}
       <div className="top-section">
         <span className="logo">{isOpen && "workasana"}</span>
         <span className="toggle-icon" onClick={toggleSidebar}>
@@ -23,27 +25,59 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </span>
       </div>
 
+      {/* Menu Items */}
       <div className="menu">
-        <div className="menu-item" data-tooltip="Dashboard">
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) =>
+            `menu-item ${isActive ? "active" : ""}`
+          }
+          data-tooltip="Dashboard"
+        >
           <FaHome className="icon" />
           <span>Dashboard</span>
-        </div>
-        <div className="menu-item" data-tooltip="Projects">
+        </NavLink>
+
+        <NavLink
+          className={({ isActive }) =>
+            `menu-item ${isActive ? "active" : ""}`
+          }
+          data-tooltip="Projects"
+        >
           <FaProjectDiagram className="icon" />
           <span>Projects</span>
-        </div>
-        <div className="menu-item" data-tooltip="Team">
+        </NavLink>
+
+        <NavLink
+          to="/teams"
+          className={({ isActive }) =>
+            `menu-item ${isActive ? "active" : ""}`
+          }
+          data-tooltip="Team"
+        >
           <FaUsers className="icon" />
           <span>Team</span>
-        </div>
-        <div className="menu-item" data-tooltip="Reports">
+        </NavLink>
+
+        <NavLink
+          className={({ isActive }) =>
+            `menu-item ${isActive ? "active" : ""}`
+          }
+          data-tooltip="Reports"
+        >
           <FaChartBar className="icon" />
           <span>Reports</span>
-        </div>
-        <div className="menu-item" data-tooltip="Settings">
+        </NavLink>
+
+        <NavLink
+          className={({ isActive }) =>
+            `menu-item ${isActive ? "active" : ""}`
+          }
+          data-tooltip="Settings"
+        >
           <FaCog className="icon" />
           <span>Settings</span>
-        </div>
+        </NavLink>
       </div>
     </div>
   );
