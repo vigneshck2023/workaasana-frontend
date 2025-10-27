@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     <div className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
       {/* Top Section */}
       <div className="top-section">
-        <span className="logo">{isOpen && "workasana"}</span>
+        <span className="logo">{isOpen && "workaasana"}</span>
         <span className="toggle-icon" onClick={toggleSidebar}>
           <FaBars />
         </span>
@@ -29,9 +29,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       <div className="menu">
         <NavLink
           to="/dashboard"
-          className={({ isActive }) =>
-            `menu-item ${isActive ? "active" : ""}`
-          }
+          className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Dashboard"
         >
           <FaHome className="icon" />
@@ -39,9 +37,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </NavLink>
 
         <NavLink
-          className={({ isActive }) =>
-            `menu-item ${isActive ? "active" : ""}`
-          }
+          to="/projects"
+          className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Projects"
         >
           <FaProjectDiagram className="icon" />
@@ -50,9 +47,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
         <NavLink
           to="/teams"
-          className={({ isActive }) =>
-            `menu-item ${isActive ? "active" : ""}`
-          }
+          className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Team"
         >
           <FaUsers className="icon" />
@@ -60,9 +55,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </NavLink>
 
         <NavLink
-          className={({ isActive }) =>
-            `menu-item ${isActive ? "active" : ""}`
-          }
+          to="/reports"
+          className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Reports"
         >
           <FaChartBar className="icon" />
@@ -70,9 +64,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </NavLink>
 
         <NavLink
-          className={({ isActive }) =>
-            `menu-item ${isActive ? "active" : ""}`
-          }
+          to="/settings"
+          className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Settings"
         >
           <FaCog className="icon" />

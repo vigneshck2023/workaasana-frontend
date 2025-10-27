@@ -70,11 +70,18 @@
   transition: all 0.25s ease;
   position: relative;
   font-size: 15px;
+  text-decoration: none;
 }
 
 .menu-item:hover {
   background-color: #ebe8ff;
   color: #6c4bf4;
+}
+
+.menu-item.active {
+  background-color: #e2ddff;
+  color: #6c4bf4;
+  font-weight: 600;
 }
 
 .menu-item .icon {
