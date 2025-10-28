@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </NavLink>
 
         <NavLink
-          to="/projects"
+        to="/projects"
           className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Projects"
         >
