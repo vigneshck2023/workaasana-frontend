@@ -8,11 +8,13 @@ const Teams = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showTeamModal, setShowTeamModal] = useState(false);
+  const [selectedTeamData, setSelectedTeamData] = useState(null);
   const [newTeam, setNewTeam] = useState({ name: "", members: ["", "", ""] });
-  const [selectedTeam, setSelectedTeam] = useState(null);
   const [newMember, setNewMember] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
-  // Fetch teams on load
+  // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
@@ -28,7 +30,7 @@ const Teams = () => {
     fetchTeams();
   }, []);
 
-  // Create new team
+  // Create team
   const handleCreateTeam = async (e) => {
     e.preventDefault();
     if (!newTeam.name.trim()) return alert("Team name cannot be empty!");
@@ -51,7 +53,7 @@ const Teams = () => {
     }
   };
 
-  // ✅ Add new member using backend route
+  // Add member
   const handleAddMember = async (teamId) => {
     if (!newMember.trim()) return alert("Member name cannot be empty!");
 
@@ -60,18 +62,21 @@ const Teams = () => {
         `https://workaasana.vercel.app/teams/${teamId}/members`,
         { name: newMember }
       );
-
-      // Update teams state
       setTeams(
         teams.map((team) => (team._id === teamId ? res.data : team))
       );
-
       setNewMember("");
       setSelectedTeam(null);
     } catch (err) {
       console.error("Error adding member:", err);
       alert("Failed to add member");
     }
+  };
+
+  // Show team modal with member list
+  const handleCardClick = (team) => {
+    setSelectedTeamData(team);
+    setShowTeamModal(true);
   };
 
   return (
@@ -87,7 +92,7 @@ const Teams = () => {
         </button>
       </div>
 
-      {/* Teams List */}
+      {/* Teams list */}
       {loading ? (
         <p>Loading teams...</p>
       ) : error ? (
@@ -96,26 +101,16 @@ const Teams = () => {
         <div className="row">
           {teams.map((team) => (
             <div key={team._id} className="col-md-6 col-lg-4 mb-4">
-              <div className="card shadow-sm border-0 h-100">
-                <div className="card-header d-flex justify-content-between align-items-center bg-light">
-                  <h5 className="mb-0">{team.name}</h5>
-                  <button
-                    className="btn btn-outline-primary btn-sm"
-                    onClick={() =>
-                      setSelectedTeam(
-                        selectedTeam === team._id ? null : team._id
-                      )
-                    }
-                  >
-                    + Add Member
-                  </button>
-                </div>
-
+              <div
+                className="card shadow-sm border-0 h-100 hover-card"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleCardClick(team)}
+              >
                 <div className="card-body">
-                  {/* Members */}
+                  <h5 className="fw-semibold">{team.name}</h5>
                   {team.members?.length > 0 ? (
-                    <div className="d-flex flex-wrap gap-2">
-                      {team.members.map((member, i) => (
+                    <div className="d-flex align-items-center gap-2 mt-2">
+                      {team.members.slice(0, 3).map((member, i) => (
                         <div
                           key={i}
                           className="badge bg-primary-subtle text-primary border rounded-circle p-3 text-uppercase fw-semibold"
@@ -132,28 +127,25 @@ const Teams = () => {
                           {member.name?.[0] || "?"}
                         </div>
                       ))}
+
+                      {team.members.length > 3 && (
+                        <div
+                          className="badge bg-secondary-subtle text-secondary border rounded-circle p-3 fw-semibold"
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "14px",
+                          }}
+                        >
+                          +{team.members.length - 3}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-muted mb-0">No members yet</p>
-                  )}
-
-                  {/* Add Member Input */}
-                  {selectedTeam === team._id && (
-                    <div className="d-flex align-items-center gap-2 mt-3 p-2 bg-light rounded">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter member name"
-                        value={newMember}
-                        onChange={(e) => setNewMember(e.target.value)}
-                      />
-                      <button
-                        className="btn btn-primary px-3"
-                        onClick={() => handleAddMember(team._id)}
-                      >
-                        Add
-                      </button>
-                    </div>
                   )}
                 </div>
               </div>
@@ -162,7 +154,7 @@ const Teams = () => {
         </div>
       )}
 
-      {/* Modal for Creating Team */}
+      {/* New Team Modal */}
       {showModal && (
         <div
           className="modal fade show d-block"
@@ -223,6 +215,53 @@ const Teams = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Team Members Modal */}
+      {showTeamModal && selectedTeamData && (
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">{selectedTeamData.name} Members</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowTeamModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                {selectedTeamData.members?.length > 0 ? (
+                  <div className="d-flex flex-wrap gap-2">
+                    {selectedTeamData.members.map((member, i) => (
+                      <div
+                        key={i}
+                        className="badge bg-primary-subtle text-primary border rounded-pill px-3 py-2 text-capitalize"
+                      >
+                        {member.name}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted">No members in this team</p>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowTeamModal(false)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
