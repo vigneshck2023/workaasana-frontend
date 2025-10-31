@@ -7,7 +7,7 @@ export default function Dashboard() {
   const [projectFilter, setProjectFilter] = useState("All");
   const [taskFilter, setTaskFilter] = useState("All");
 
-  // ✅ Reusable Fetch Hook
+  // Reusable Fetch Hook
   const useFetch = (url) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function Dashboard() {
     return { data, loading, error };
   };
 
-  // ✅ Fetch Data
+  // Fetch Data
   const {
     data: projects,
     loading: loadingProjects,
@@ -54,7 +54,7 @@ export default function Dashboard() {
       : "badge in-progress";
   };
 
-  // ✅ Filters
+  //  Filters
   const filteredProjects = projects.filter(
     (p) =>
       (projectFilter === "All" || p.status === projectFilter) &&

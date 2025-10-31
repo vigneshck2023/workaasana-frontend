@@ -4,6 +4,8 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Teams from "./pages/Teams";
 import "./pages/App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Projects from "./pages/Projects";
 
 export default function App() {

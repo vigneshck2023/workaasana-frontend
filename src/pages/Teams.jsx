@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./Teams.css";
 
 const Teams = () => {
@@ -32,7 +33,6 @@ const Teams = () => {
     e.preventDefault();
     if (!newTeam.name.trim()) return alert("Team name cannot be empty!");
 
-    // Clean up empty member names
     const members = newTeam.members
       .filter((m) => m.trim() !== "")
       .map((m) => ({ name: m }));
@@ -51,22 +51,19 @@ const Teams = () => {
     }
   };
 
-  // Add new member to existing team
+  // ✅ Add new member using backend route
   const handleAddMember = async (teamId) => {
     if (!newMember.trim()) return alert("Member name cannot be empty!");
 
     try {
-      const teamToUpdate = teams.find((t) => t._id === teamId);
-      const updatedMembers = [...(teamToUpdate.members || []), { name: newMember }];
+      const res = await axios.post(
+        `https://workaasana.vercel.app/teams/${teamId}/members`,
+        { name: newMember }
+      );
 
-      const res = await axios.put(`https://workaasana.vercel.app/teams/${teamId}`, {
-        members: updatedMembers,
-      });
-
+      // Update teams state
       setTeams(
-        teams.map((team) =>
-          team._id === teamId ? { ...team, members: updatedMembers } : team
-        )
+        teams.map((team) => (team._id === teamId ? res.data : team))
       );
 
       setNewMember("");
@@ -78,11 +75,14 @@ const Teams = () => {
   };
 
   return (
-    <div className="teams-page">
+    <div className="container py-4">
       {/* Header */}
-      <div className="header">
-        <h2>Teams</h2>
-        <button onClick={() => setShowModal(true)} className="new-btn">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="fw-bold">Teams</h2>
+        <button
+          onClick={() => setShowModal(true)}
+          className="btn btn-primary btn-sm"
+        >
           + New Team
         </button>
       </div>
@@ -91,48 +91,72 @@ const Teams = () => {
       {loading ? (
         <p>Loading teams...</p>
       ) : error ? (
-        <p className="error">{error}</p>
+        <p className="text-danger">{error}</p>
       ) : (
-        <div className="card-grid">
+        <div className="row">
           {teams.map((team) => (
-            <div key={team._id} className="card">
-              <div className="card-header">
-                <h4>{team.name}</h4>
-                <button
-                  className="add-member-btn"
-                  onClick={() =>
-                    setSelectedTeam(selectedTeam === team._id ? null : team._id)
-                  }
-                >
-                  + Add Member
-                </button>
-              </div>
-
-              {/* Members List */}
-              <div className="members">
-                {team.members?.length > 0 ? (
-                  team.members.map((member, i) => (
-                    <div key={i} className="avatar" title={member.name}>
-                      {member.name?.[0]?.toUpperCase() || "?"}
-                    </div>
-                  ))
-                ) : (
-                  <p className="no-members">No members yet</p>
-                )}
-              </div>
-
-              {/* Add Member Input */}
-              {selectedTeam === team._id && (
-                <div className="add-member-input">
-                  <input
-                    type="text"
-                    placeholder="Enter member name"
-                    value={newMember}
-                    onChange={(e) => setNewMember(e.target.value)}
-                  />
-                  <button onClick={() => handleAddMember(team._id)}>Add</button>
+            <div key={team._id} className="col-md-6 col-lg-4 mb-4">
+              <div className="card shadow-sm border-0 h-100">
+                <div className="card-header d-flex justify-content-between align-items-center bg-light">
+                  <h5 className="mb-0">{team.name}</h5>
+                  <button
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={() =>
+                      setSelectedTeam(
+                        selectedTeam === team._id ? null : team._id
+                      )
+                    }
+                  >
+                    + Add Member
+                  </button>
                 </div>
-              )}
+
+                <div className="card-body">
+                  {/* Members */}
+                  {team.members?.length > 0 ? (
+                    <div className="d-flex flex-wrap gap-2">
+                      {team.members.map((member, i) => (
+                        <div
+                          key={i}
+                          className="badge bg-primary-subtle text-primary border rounded-circle p-3 text-uppercase fw-semibold"
+                          title={member.name}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {member.name?.[0] || "?"}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted mb-0">No members yet</p>
+                  )}
+
+                  {/* Add Member Input */}
+                  {selectedTeam === team._id && (
+                    <div className="d-flex align-items-center gap-2 mt-3 p-2 bg-light rounded">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter member name"
+                        value={newMember}
+                        onChange={(e) => setNewMember(e.target.value)}
+                      />
+                      <button
+                        className="btn btn-primary px-3"
+                        onClick={() => handleAddMember(team._id)}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -140,48 +164,66 @@ const Teams = () => {
 
       {/* Modal for Creating Team */}
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Create New Team</h3>
-            <form onSubmit={handleCreateTeam}>
-              <label>Team Name</label>
-              <input
-                type="text"
-                placeholder="Enter Team Name"
-                value={newTeam.name}
-                onChange={(e) =>
-                  setNewTeam({ ...newTeam, name: e.target.value })
-                }
-              />
-
-              <label>Add Members</label>
-              {newTeam.members.map((member, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  placeholder={`Member Name ${index + 1}`}
-                  value={member}
-                  onChange={(e) => {
-                    const updated = [...newTeam.members];
-                    updated[index] = e.target.value;
-                    setNewTeam({ ...newTeam, members: updated });
-                  }}
-                />
-              ))}
-
-              <div className="modal-actions">
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Create New Team</h5>
                 <button
                   type="button"
+                  className="btn-close"
                   onClick={() => setShowModal(false)}
-                  className="cancel-btn"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="create-btn">
-                  Create
-                </button>
+                ></button>
               </div>
-            </form>
+              <form onSubmit={handleCreateTeam}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label">Team Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter Team Name"
+                      value={newTeam.name}
+                      onChange={(e) =>
+                        setNewTeam({ ...newTeam, name: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  <label className="form-label">Add Members</label>
+                  {newTeam.members.map((member, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      className="form-control mb-2"
+                      placeholder={`Member Name ${index + 1}`}
+                      value={member}
+                      onChange={(e) => {
+                        const updated = [...newTeam.members];
+                        updated[index] = e.target.value;
+                        setNewTeam({ ...newTeam, members: updated });
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Create
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
