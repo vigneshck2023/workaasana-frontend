@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Teams from "./pages/Teams";
 import "./pages/App.css";
+import Report from "./pages/Report";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Projects from "./pages/Projects";
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/projects" element={<Projects/>} />
+          <Route path="/reports" element={<Report />}/>
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>

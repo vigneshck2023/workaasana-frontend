@@ -1,150 +1,165 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-
-// ---- Chart.js Import (added as requested) ----
-import {
-  Chart as ChartJS,
-  ArcElement,
-  BarElement,
-  Tooltip as ChartTooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
-
-// Register chart.js components
-ChartJS.register(ArcElement, BarElement, ChartTooltip, Legend, CategoryScale, LinearScale);
-
-// ---- Recharts Components ----
+import React from "react";
 import {
   PieChart,
   Pie,
   Cell,
-  Tooltip,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
+  Tooltip,
 } from "recharts";
 
-export default function Report() {
-  const API_BASE = "https://workaasana.vercel.app";
+const Reports = () => {
+  // Sample Data
+  const projectData = [
+    { name: "Completed", value: 2 },
+    { name: "In Progress", value: 0 },
+  ];
 
-  const [projects, setProjects] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const taskData = [
+    { name: "In Progress", value: 1 },
+    { name: "To Do", value: 1 },
+    { name: "Blocked", value: 0 },
+  ];
 
-  // Fetch Data
-  useEffect(() => {
-    fetchReports();
-  }, []);
+  const timeTaken = [
+    { name: "Task A", hours: 36 },
+  ];
 
-  const fetchReports = async () => {
-    try {
-      const projRes = await fetch(`${API_BASE}/projects`);
-      const taskRes = await fetch(`${API_BASE}/tasks`);
+  // Pie Chart Colors
+  const COLORS = ["#00C49F", "#ff6384"];
 
-      const projData = await projRes.json();
-      const taskData = await taskRes.json();
-
-      setProjects(projData);
-      setTasks(taskData);
-    } catch (err) {
-      console.error("Error fetching report data:", err);
-    }
+  const fontStyle = {
+    fontFamily: "Inter, sans-serif",
+    fontWeight: 550,
   };
 
-  // -------- Report Data Processing --------
-
-  const projectStatus = [
-    {
-      name: "Completed",
-      value: projects.filter((p) => p.status === "Completed").length,
-    },
-    {
-      name: "In Progress",
-      value: projects.filter((p) => p.status === "In Progress").length,
-    },
-  ];
-
-  const taskStatus = [
-    { name: "Completed", value: tasks.filter((t) => t.status === "Completed").length },
-    { name: "In Progress", value: tasks.filter((t) => t.status === "In Progress").length },
-    { name: "To Do", value: tasks.filter((t) => t.status === "To Do").length },
-    { name: "Blocked", value: tasks.filter((t) => t.status === "Blocked").length },
-  ];
-
-  const taskTime = tasks.map((t) => ({
-    name: t.name,
-    value: t.timeToComplete || 0,
-  }));
-
-  const COLORS = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"];
-
   return (
-    <div className="dashboard-page">
+    <div style={{ padding: "30px" }}>
+      <h1
+        style={{
+          ...fontStyle,
+          fontSize: "24px",
+          marginBottom: "25px",
+        }}
+      >
+        Reports & Analytics
+      </h1>
 
-      {/* Header */}
-      <div className="section-header">
-        <h3>Reports & Analytics</h3>
-      </div>
+      {/* Row 1 */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "25px",
+          marginBottom: "30px",
+        }}
+      >
+        {/* Project Status Distribution */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "25px",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2 style={{ ...fontStyle, fontSize: "20px", textAlign: "center" }}>
+            Project Status Distribution
+          </h2>
 
-      <div className="chart-container">
-
-        {/* Project Status Pie Chart */}
-        <div className="chart-card">
-          <h4>Project Status Distribution</h4>
-
-          <PieChart width={350} height={300}>
+          <PieChart width={400} height={300}>
             <Pie
+              data={projectData}
+              cx="50%"
+              cy="50%"
+              outerRadius={110}
+              fill="#8884d8"
               dataKey="value"
-              data={projectStatus}
-              cx={150}
-              cy={140}
-              outerRadius={100}
-              label
+              label={{
+                style: fontStyle,
+              }}
             >
-              {projectStatus.map((_, idx) => (
-                <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
+              {projectData.map((entry, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip />
           </PieChart>
         </div>
 
-        {/* Task Status Bar Chart */}
-        <div className="chart-card">
-          <h4>Task Status Breakdown</h4>
+        {/* Task Status Breakdown */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "25px",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2 style={{ ...fontStyle, fontSize: "20px", textAlign: "center" }}>
+            Task Status Breakdown
+          </h2>
 
-          <BarChart width={400} height={300} data={taskStatus}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="value" fill="#4e73df" />
-          </BarChart>
-        </div>
-
-        {/* Task Time Bar Chart */}
-        <div className="chart-card">
-          <h4>Time Taken Per Task (hrs)</h4>
-
-          <BarChart width={400} height={300} data={taskTime}>
+          <BarChart width={450} height={300} data={taskData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="name"
-              interval={0}
-              angle={-15}
-              textAnchor="end"
-              height={80}
+              style={fontStyle}
             />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="value" fill="#1cc88a" />
+            <YAxis
+              style={fontStyle}
+            />
+            <Tooltip
+              contentStyle={{
+                ...fontStyle,
+                fontWeight: 500,
+                borderRadius: "8px",
+              }}
+            />
+            <Bar dataKey="value" fill="#4F46E5" />
           </BarChart>
         </div>
+      </div>
 
+      {/* Row 2 */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: "25px",
+        }}
+      >
+        {/* Time taken per task */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "25px",
+            boxShadow: "0px 4px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2 style={{ ...fontStyle, fontSize: "20px", textAlign: "center" }}>
+            Time Taken Per Task (hrs)
+          </h2>
+
+          <BarChart width={500} height={300} data={timeTaken}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" style={fontStyle} />
+            <YAxis style={fontStyle} />
+            <Tooltip
+              contentStyle={{
+                ...fontStyle,
+                borderRadius: "10px",
+              }}
+            />
+            <Bar dataKey="hours" fill="#10B981" />
+          </BarChart>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default Reports;
