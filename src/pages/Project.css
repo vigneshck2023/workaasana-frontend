@@ -1,0 +1,46 @@
+.table-container {
+  padding: 20px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.project-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.project-table th,
+.project-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.owner-cell {
+  display: flex;
+  gap: 6px;
+}
+
+.owner-badge,
+.owner-more {
+  background: #d9e6ff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-select {
+  padding: 6px;
+  border-radius: 6px;
+}
