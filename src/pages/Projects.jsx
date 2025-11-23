@@ -15,40 +15,30 @@ export default function Project() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [teams, setTeams] = useState(() => {
-    const saved = localStorage.getItem("teams");
-    return saved ? JSON.parse(saved) : [];
-  });
-
   const [loading, setLoading] = useState(true);
 
-  // Fetch Data and Store in LocalStorage
+  // Fetch Data
   useEffect(() => {
-    if (projects.length && tasks.length && teams.length) {
+    if (projects.length && tasks.length) {
       setLoading(false);
       return;
     }
 
     const fetchData = async () => {
       try {
-        const [projRes, taskRes, teamRes] = await Promise.all([
+        const [projRes, taskRes] = await Promise.all([
           fetch(`${API_BASE}/projects`),
           fetch(`${API_BASE}/tasks`),
-          fetch(`${API_BASE}/teams`),
         ]);
 
         const projData = await projRes.json();
         const taskData = await taskRes.json();
-        const teamData = await teamRes.json();
 
         setProjects(projData);
         setTasks(taskData);
-        setTeams(teamData);
 
-        // 🔹 Save to localStorage
         localStorage.setItem("projects", JSON.stringify(projData));
         localStorage.setItem("tasks", JSON.stringify(taskData));
-        localStorage.setItem("teams", JSON.stringify(teamData));
       } catch (error) {
         console.error("API error:", error);
       } finally {
@@ -59,14 +49,14 @@ export default function Project() {
     fetchData();
   }, []);
 
-  // 🔹 Update Status in Backend + LocalStorage
+  // Update Status
   const handleStatusChange = async (id, newStatus) => {
     setProjects((prev) => {
       const updated = prev.map((p) =>
-        p.id === id ? { ...p, status: newStatus } : p
+        p._id === id ? { ...p, status: newStatus } : p
       );
 
-      localStorage.setItem("projects", JSON.stringify(updated)); // save locally
+      localStorage.setItem("projects", JSON.stringify(updated));
       return updated;
     });
 
@@ -77,9 +67,7 @@ export default function Project() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!res.ok) {
-        alert("Failed to update in backend");
-      }
+      if (!res.ok) alert("Failed to update backend");
     } catch (err) {
       alert("Backend error — saved locally only");
     }
@@ -91,60 +79,37 @@ export default function Project() {
     <div className="table-container">
       <div className="table-header">
         <h2>Projects</h2>
-        <button className="new-project-btn">+ New Project</button>
+        <button className="new-btn" onClick={() => setShowTaskModal(true)}>
+              + New Task
+            </button>
       </div>
 
       <table className="project-table">
         <thead>
           <tr>
             <th>PROJECT</th>
-            <th>OWNERS</th>
             <th>TASKS</th>
             <th>STATUS</th>
-            <th>DUE DATE</th>
           </tr>
         </thead>
 
         <tbody>
           {projects.map((p) => {
-            const owners = teams.filter((t) => t.projectId === p.id);
-            const projectTasks = tasks.filter((t) => t.projectId === p.id);
+            const projectTasks = tasks.filter((t) => t.projectId === p._id);
 
             return (
-              <tr key={p.id}>
+              <tr key={p._id}>
                 <td>{p.name}</td>
-
-                <td>
-                  <div className="owner-cell">
-                    {owners.slice(0, 2).map((o, i) => (
-                      <span key={i} className="owner-badge">
-                        {o.name.slice(0, 2).toUpperCase()}
-                      </span>
-                    ))}
-                    {owners.length > 2 && (
-                      <span className="owner-more">+{owners.length - 2}</span>
-                    )}
-                  </div>
-                </td>
-
                 <td>{projectTasks.length}</td>
-
                 <td>
                   <select
-                    value={p.status || "Pending"}
+                    value={p.status || "In Progress"}
                     className="status-select"
-                    onChange={(e) => handleStatusChange(p.id, e.target.value)}
+                    onChange={(e) => handleStatusChange(p._id, e.target.value)}
                   >
-                    <option>Pending</option>
                     <option>In Progress</option>
                     <option>Completed</option>
                   </select>
-                </td>
-
-                <td>
-                  {p.deadline
-                    ? new Date(p.deadline).toDateString()
-                    : "No Deadline"}
                 </td>
               </tr>
             );
