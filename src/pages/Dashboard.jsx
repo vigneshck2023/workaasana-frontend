@@ -16,7 +16,7 @@ export default function Dashboard() {
     project: "",
     team: "",
     timeToComplete: "",
-    status: "To Do",
+    status: "In Progress",
   });
 
   const [newProject, setNewProject] = useState({
@@ -30,7 +30,11 @@ export default function Dashboard() {
 
   const API_BASE = "https://workaasana.vercel.app";
 
-  // Fetch data from backend
+  // Load Data
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchData = async () => {
     try {
       const [projRes, taskRes, teamRes] = await Promise.all([
@@ -47,25 +51,10 @@ export default function Dashboard() {
     }
   };
 
-  // Load data initially
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Refresh dashboard when project data is updated from another page
-  useEffect(() => {
-    const listener = (e) => {
-      if (e.key === "dataUpdated") {
-        fetchData();
-      }
-    };
-    window.addEventListener("storage", listener);
-    return () => window.removeEventListener("storage", listener);
-  }, []);
-
+  // Search
   const handleSearch = (e) => setSearchQuery(e.target.value.toLowerCase());
 
-  // Status badge class
+  // Status badge style
   const getStatusBadgeClass = (status) => {
     if (!status) return "badge in-progress";
     return status.toLowerCase() === "completed"
@@ -78,11 +67,9 @@ export default function Dashboard() {
     const matchesFilter =
       projectFilter === "All" ||
       (p.status && p.status.toLowerCase() === projectFilter.toLowerCase());
-
     const matchesSearch =
       p.name?.toLowerCase().includes(searchQuery) ||
       p.description?.toLowerCase().includes(searchQuery);
-
     return matchesFilter && matchesSearch;
   });
 
@@ -91,16 +78,76 @@ export default function Dashboard() {
     const matchesFilter =
       taskFilter === "All" ||
       (t.status && t.status.toLowerCase() === taskFilter.toLowerCase());
-
     const matchesSearch = t.name?.toLowerCase().includes(searchQuery);
-
     return matchesFilter && matchesSearch;
   });
 
+  // CREATE PROJECT
+  const handleCreateProject = async (e) => {
+    e.preventDefault();
+    if (!newProject.name.trim()) return alert("Project Name is required!");
+
+    try {
+      const res = await fetch(`${API_BASE}/projects`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProject),
+      });
+
+      if (!res.ok) throw new Error("Failed to create project");
+      alert("Project created successfully!");
+      setShowProjectModal(false);
+      setNewProject({ name: "", description: "" });
+      fetchData();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  // CREATE TASK
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+
+    if (!newTask.name.trim()) return alert("Task Name is required!");
+    if (!newTask.project) return alert("Select a project!");
+    if (!newTask.team) return alert("Select a team!");
+
+    const taskPayload = {
+      name: newTask.name,
+      project: newTask.project,
+      team: newTask.team,
+      owners: [],
+      tags: [],
+      timeToComplete: Number(newTask.timeToComplete),
+      status: newTask.status,
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(taskPayload),
+      });
+
+      if (!res.ok) throw new Error("Failed to create task");
+      alert("Task created successfully!");
+      setShowTaskModal(false);
+      setNewTask({
+        name: "",
+        project: "",
+        team: "",
+        timeToComplete: "",
+        status: "In Progress",
+      });
+      fetchData();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="dashboard-page">
-
-      {/* Search Bar */}
+      {/* SEARCH BAR */}
       <div className="topbar">
         <div className="search-bar">
           <FaSearch className="search-icon" />
@@ -114,12 +161,14 @@ export default function Dashboard() {
       </div>
 
       <div className="dashboard-content">
-
-        {/* Projects Section */}
+        {/* PROJECT SECTION */}
         <div className="section-header">
           <h3>Projects</h3>
           <div className="controls">
-            <button className="new-btn" onClick={() => setShowProjectModal(true)}>
+            <button
+              className="new-btn"
+              onClick={() => setShowProjectModal(true)}
+            >
               + New Project
             </button>
             <div className="filter-group">
@@ -154,11 +203,14 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Tasks Section */}
+        {/* TASK SECTION */}
         <div className="section-header">
           <h3>My Tasks</h3>
           <div className="controls">
-            <button className="new-btn" onClick={() => setShowTaskModal(true)}>
+            <button
+              className="new-btn"
+              onClick={() => setShowTaskModal(true)}
+            >
               + New Task
             </button>
             <div className="filter-group">
@@ -181,7 +233,7 @@ export default function Dashboard() {
               <div key={task._id} className="card">
                 <div className="card-header">
                   <span className={getStatusBadgeClass(task.status)}>
-                    {task.status || "To Do"}
+                    {task.status || "In Progress"}
                   </span>
                 </div>
                 <h4>{task.name}</h4>
@@ -192,8 +244,122 @@ export default function Dashboard() {
             <p>No tasks found.</p>
           )}
         </div>
-
       </div>
+
+      {/* TASK MODAL */}
+      {showTaskModal && (
+        <TaskModal
+          newTask={newTask}
+          setNewTask={setNewTask}
+          setShowTaskModal={setShowTaskModal}
+          handleCreateTask={handleCreateTask}
+          projects={projects}
+          teams={teams}
+        />
+      )}
+
+      {/* PROJECT MODAL */}
+      {showProjectModal && (
+        <ProjectModal
+          newProject={newProject}
+          setNewProject={setNewProject}
+          setShowProjectModal={setShowProjectModal}
+          handleCreateProject={handleCreateProject}
+        />
+      )}
     </div>
   );
 }
+
+/* ---- TASK MODAL ---- */
+const TaskModal = ({
+  newTask,
+  setNewTask,
+  setShowTaskModal,
+  handleCreateTask,
+  projects,
+  teams,
+}) => (
+  <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content p-3">
+        <div className="modal-header">
+          <h5 className="modal-title">Create New Task</h5>
+          <button type="button" className="btn-close" onClick={() => setShowTaskModal(false)}></button>
+        </div>
+
+        <form onSubmit={handleCreateTask}>
+          <div className="modal-body">
+            <label>Select Project</label>
+            <select
+              className="form-control"
+              value={newTask.project}
+              onChange={(e) => setNewTask({ ...newTask, project: e.target.value })}
+            >
+              <option value="">Select Project</option>
+              {projects.map((p) => (
+                <option key={p._id} value={p._id}>{p.name}</option>
+              ))}
+            </select>
+
+            <label>Task Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={newTask.name}
+              onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+            />
+          </div>
+
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowTaskModal(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+);
+
+/* ---- PROJECT MODAL ---- */
+const ProjectModal = ({
+  newProject,
+  setNewProject,
+  setShowProjectModal,
+  handleCreateProject,
+}) => (
+  <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content p-3">
+        <div className="modal-header">
+          <h5 className="modal-title">Create New Project</h5>
+          <button type="button" className="btn-close" onClick={() => setShowProjectModal(false)}></button>
+        </div>
+
+        <form onSubmit={handleCreateProject}>
+          <div className="modal-body">
+            <label>Project Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={newProject.name}
+              onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+            />
+            <label>Project Description</label>
+            <textarea
+              className="form-control"
+              value={newProject.description}
+              onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+              rows="3"
+            />
+          </div>
+
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowProjectModal(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+);
