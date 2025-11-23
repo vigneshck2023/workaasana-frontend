@@ -17,7 +17,7 @@ export default function Project() {
 
   const [loading, setLoading] = useState(true);
 
-  // Fetch Data
+  // FETCH DATA
   useEffect(() => {
     if (projects.length && tasks.length) {
       setLoading(false);
@@ -49,7 +49,7 @@ export default function Project() {
     fetchData();
   }, []);
 
-  // Update Status
+  // UPDATE STATUS + LOCALSTORAGE + TRIGGER DASHBOARD REFRESH
   const handleStatusChange = async (id, newStatus) => {
     setProjects((prev) => {
       const updated = prev.map((p) =>
@@ -57,6 +57,7 @@ export default function Project() {
       );
 
       localStorage.setItem("projects", JSON.stringify(updated));
+      localStorage.setItem("dataUpdated", Date.now()); // 🔁 triggers Dashboard
       return updated;
     });
 
@@ -67,7 +68,9 @@ export default function Project() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!res.ok) alert("Failed to update backend");
+      if (!res.ok) {
+        alert("Failed to update backend");
+      }
     } catch (err) {
       alert("Backend error — saved locally only");
     }
@@ -79,9 +82,6 @@ export default function Project() {
     <div className="table-container">
       <div className="table-header">
         <h2>Projects</h2>
-        <button className="new-btn" onClick={() => setShowTaskModal(true)}>
-              + New Task
-            </button>
       </div>
 
       <table className="project-table">
