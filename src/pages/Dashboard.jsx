@@ -1,4 +1,3 @@
-// Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import "./App.css";
