@@ -77,3 +77,55 @@
   outline: none;
   border-color: #3b4bff;
 }
+
+
+@media (max-width: 1024px) {
+  .page-title {
+    font-size: 24px;
+  }
+
+  .project-container {
+    padding: 15px;
+  }
+
+  .project-table th,
+  .project-table td {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 22px;
+  }
+
+  .table-wrapper {
+    border-radius: 5px;
+  }
+
+  .project-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .project-container {
+    padding: 10px;
+  }
+
+  .project-table {
+    min-width: 500px;
+  }
+
+  .project-table th,
+  .project-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+}

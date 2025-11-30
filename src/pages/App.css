@@ -1,17 +1,18 @@
+/* =========================================================
+   BASE LAYOUT
+========================================================= */
 .app-container {
   display: flex;
   font-family: "Inter", sans-serif;
   color: #2b2b2b;
   background: #f8f9fc;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .dashboard-page {
   width: 100%;
-  height: 100%;
   background: #f8f9fc;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
 }
@@ -34,6 +35,9 @@
   margin-left: 220px;
 }
 
+/* =========================================================
+   TOPBAR
+========================================================= */
 .topbar {
   display: flex;
   justify-content: flex-end;
@@ -71,6 +75,9 @@
   font-size: 14px;
 }
 
+/* =========================================================
+   SECTION HEADER
+========================================================= */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -86,6 +93,9 @@
   color: #333;
 }
 
+/* =========================================================
+   BUTTONS + FILTERS
+========================================================= */
 .new-btn {
   background: #5c6bc0;
   color: white;
@@ -132,6 +142,9 @@
   font-size: 14px;
 }
 
+/* =========================================================
+   CARDS
+========================================================= */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -154,16 +167,18 @@
 
 .card h4 {
   font-size: 17px;
-  margin: 10px 0 6px;
-  color: #333;
+  margin-bottom: 6px;
 }
 
 .card p {
-  color: #555;
   font-size: 14px;
   line-height: 1.5;
+  color: #555;
 }
 
+/* =========================================================
+   BADGES
+========================================================= */
 .badge {
   display: inline-block;
   padding: 5px 12px;
@@ -183,12 +198,17 @@
   color: #856404;
 }
 
+/* =========================================================
+   ERRORS
+========================================================= */
 .error {
   color: #d32f2f;
   font-weight: 500;
-  font-size: 14px;
 }
 
+/* =========================================================
+   DASHBOARD CONTENT
+========================================================= */
 .dashboard-content {
   flex: 1;
   display: flex;
@@ -196,10 +216,14 @@
   gap: 20px;
 }
 
-@media (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    align-items: stretch;
+/* =========================================================
+   RESPONSIVE MEDIA QUERIES
+========================================================= */
+
+/* Extra small phones (≤480px) */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 14px;
   }
 
   .search-bar input {
@@ -211,6 +235,11 @@
     align-items: flex-start;
   }
 
+  .new-btn {
+    width: 100%;
+    text-align: center;
+  }
+
   .controls {
     width: 100%;
     justify-content: space-between;
@@ -219,253 +248,23 @@
   .card-grid {
     grid-template-columns: 1fr;
   }
-}
 
-/* ====== Base Layout ====== */
-.app-container {
-  display: flex;
-  font-family: "Inter", sans-serif;
-  color: #2b2b2b;
-  background: #f8f9fc;
-  min-height: 100vh;
-}
-
-.dashboard-page {
-  width: 100%;
-  height: 100%;
-  background: #f8f9fc;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-content {
-  flex-grow: 1;
-  padding: 24px 32px;
-  transition: margin-left 0.3s ease;
-  width: 100%;
-  min-height: 100vh;
-  background: #f8f9fc;
-  overflow-x: hidden;
-}
-
-.main-content.collapsed {
-  margin-left: 70px;
-}
-
-.main-content.expanded {
-  margin-left: 220px;
-}
-
-/* ====== Topbar ====== */
-.topbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.search-bar {
-  position: relative;
-}
-
-.search-bar input {
-  width: 260px;
-  padding: 10px 40px 10px 16px;
-  border: 1px solid #dcdde1;
-  border-radius: 12px;
-  outline: none;
-  font-size: 14px;
-  background-color: white;
-  transition: all 0.3s ease;
-}
-
-.search-bar input:focus {
-  border-color: #5c6bc0;
-  box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.2);
-}
-
-.search-icon {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #777;
-  font-size: 14px;
-}
-
-/* ====== Section Header ====== */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 36px 0 20px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.section-header h3 {
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-}
-
-/* ====== Buttons & Controls ====== */
-.new-btn {
-  background: #5c6bc0;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.new-btn:hover {
-  background: #3f51b5;
-  transform: translateY(-1px);
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #ffffff;
-  border: 1px solid #dcdde1;
-  border-radius: 8px;
-  padding: 4px 8px;
-}
-
-.filter-group select {
-  border: none;
-  outline: none;
-  font-size: 14px;
-  background: transparent;
-  color: #333;
-  cursor: pointer;
-}
-
-.filter-icon {
-  color: #666;
-  font-size: 14px;
-}
-
-/* ====== Cards ====== */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  border: 1px solid #eee;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-.card h4 {
-  font-size: 17px;
-  margin: 10px 0 6px;
-  color: #333;
-}
-
-.card p {
-  color: #555;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* ====== Badges ====== */
-.badge {
-  display: inline-block;
-  padding: 5px 12px;
-  border-radius: 30px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.badge.completed {
-  background: #c8e6c9;
-  color: #256029;
-}
-
-.badge.in-progress {
-  background: #fff3cd;
-  color: #856404;
-}
-
-/* ====== Error ====== */
-.error {
-  color: #d32f2f;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-/* ====== Dashboard Content ====== */
-.dashboard-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* ====== RESPONSIVE DESIGN ====== */
-
-/* Extra small devices (phones ≤576px) */
-@media (max-width: 576px) {
-  .main-content {
-    padding: 16px;
+  .main-content.expanded,
+  .main-content.collapsed {
+    margin-left: 0 !important; /* sidebar auto overlays */
   }
+}
 
+/* Phones (≤576px) */
+@media (max-width: 576px) {
   .topbar {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
   }
 
-  .search-bar input {
-    width: 100%;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .new-btn {
-    width: 100%;
-  }
-
-  .filter-group {
-    width: 100%;
-    justify-content: space-between;
+  .card {
+    padding: 16px;
   }
 }
 
@@ -479,17 +278,13 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 
-  .card {
-    padding: 16px;
+  .main-content {
+    padding: 18px 20px;
   }
 }
 
 /* Small laptops (≤992px) */
 @media (max-width: 992px) {
-  .main-content {
-    padding: 20px;
-  }
-
   .section-header h3 {
     font-size: 19px;
   }
