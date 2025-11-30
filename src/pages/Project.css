@@ -1,62 +1,79 @@
-.table-container {
-  padding: 20px;
+/* MAIN PAGE */
+.project-container {
+  padding: 30px;
+  font-family: "Inter", sans-serif;
 }
 
-.table-header {
-  display: flex;
-  justify-content: space-between;
+.project-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #222;
 }
 
+/* TABLE */
 .project-table {
   width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0 15px;
 }
 
-.project-table th,
-.project-table td {
+/* TABLE HEADER */
+.project-table thead th {
   text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid #eee;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 12px;
 }
 
-.owner-cell {
-  display: flex;
-  gap: 6px;
+/* TABLE ROWS */
+.project-row {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.08);
+  transition: 0.25s ease;
 }
 
-.owner-badge,
-.owner-more {
-  background: #d9e6ff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  font-weight: bold;
+.project-row:hover {
+  transform: scale(1.01);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* TABLE CELLS */
+.project-row td {
+  padding: 16px 20px;
+  font-size: 15px;
+  color: #222;
+}
+
+.project-row td:first-child {
+  font-weight: 600;
+}
+
+/* TASK COUNT STYLE */
+.task-count {
+  text-align: center;
+  font-weight: 600;
+  color: #3b4bff;
+}
+
+/* SELECT DROPDOWN */
 .status-select {
-  padding: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-}
-
-.new-btn {
-  background: #5c6bc0;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 500;
+  font-size: 14px;
+  background: white;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: 0.2s ease;
 }
 
-.new-btn:hover {
-  background: #3f51b5;
-  transform: translateY(-1px);
+.status-select:hover {
+  border-color: #666;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #3b4bff;
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./Project.css";
 
 const API_BASE = "https://workaasana.vercel.app";
 
@@ -31,13 +32,6 @@ export default function ProjectPage() {
     fetchData();
   }, []);
 
-  const refreshTasks = async () => {
-    const res = await fetch(`${API_BASE}/tasks`);
-    const data = await res.json();
-    setTasks(data);
-    localStorage.setItem("tasks", JSON.stringify(data));
-  };
-
   const handleStatusChange = async (id, status) => {
     try {
       const res = await fetch(`${API_BASE}/projects/${id}`, {
@@ -58,15 +52,15 @@ export default function ProjectPage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Projects</h1>
+    <div className="project-container">
+      <h1 className="project-title">Projects</h1>
 
-      <table className="w-full border-separate border-spacing-y-3">
+      <table className="project-table">
         <thead>
-          <tr className="text-gray-600 text-sm font-semibold">
-            <th className="text-left px-2">PROJECT</th>
-            <th className="text-center px-2">TASKS</th>
-            <th className="text-center px-2">STATUS</th>
+          <tr>
+            <th>PROJECT</th>
+            <th>TASKS</th>
+            <th>STATUS</th>
           </tr>
         </thead>
 
@@ -77,25 +71,16 @@ export default function ProjectPage() {
             ).length;
 
             return (
-              <tr
-                key={project._id}
-                className="bg-white shadow-sm rounded-lg"
-              >
-                <td className="px-4 py-4 rounded-l-lg text-[15px]">
-                  {project.name}
-                </td>
-
-                <td className="px-4 py-4 text-center text-[15px]">
-                  {taskCount}
-                </td>
-
-                <td className="px-4 py-4 text-center rounded-r-lg">
+              <tr key={project._id} className="project-row">
+                <td>{project.name}</td>
+                <td className="task-count">{taskCount}</td>
+                <td>
                   <select
                     value={project.status}
                     onChange={(e) =>
                       handleStatusChange(project._id, e.target.value)
                     }
-                    className="px-3 py-2 border rounded-md bg-white text-[14px]"
+                    className="status-select"
                   >
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>

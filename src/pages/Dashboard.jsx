@@ -271,6 +271,56 @@ export default function Dashboard() {
 }
 
 /* ---- TASK MODAL ---- */
+// const TaskModal = ({
+//   newTask,
+//   setNewTask,
+//   setShowTaskModal,
+//   handleCreateTask,
+//   projects,
+//   teams,
+// }) => (
+//   <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+//     <div className="modal-dialog modal-dialog-centered">
+//       <div className="modal-content p-3">
+//         <div className="modal-header">
+//           <h5 className="modal-title">Create New Task</h5>
+//           <button type="button" className="btn-close" onClick={() => setShowTaskModal(false)}></button>
+//         </div>
+
+//         <form onSubmit={handleCreateTask}>
+//           <div className="modal-body">
+//             <label>Select Project</label>
+//             <select
+//               className="form-control"
+//               value={newTask.project}
+//               onChange={(e) => setNewTask({ ...newTask, project: e.target.value })}
+//             >
+//               <option value="">Select Project</option>
+//               {projects.map((p) => (
+//                 <option key={p._id} value={p._id}>{p.name}</option>
+//               ))}
+//             </select>
+
+//             <label>Task Name</label>
+//             <input
+//               type="text"
+//               className="form-control"
+//               value={newTask.name}
+//               onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+//             />
+//           </div>
+
+//           <div className="modal-footer">
+//             <button type="button" className="btn btn-secondary" onClick={() => setShowTaskModal(false)}>Cancel</button>
+//             <button type="submit" className="btn btn-primary">Create</button>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+/* ---- TASK MODAL ---- */
 const TaskModal = ({
   newTask,
   setNewTask,
@@ -279,40 +329,94 @@ const TaskModal = ({
   projects,
   teams,
 }) => (
-  <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+  <div
+    className="modal fade show d-block"
+    style={{ background: "rgba(0,0,0,0.5)" }}
+  >
     <div className="modal-dialog modal-dialog-centered">
       <div className="modal-content p-3">
         <div className="modal-header">
           <h5 className="modal-title">Create New Task</h5>
-          <button type="button" className="btn-close" onClick={() => setShowTaskModal(false)}></button>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowTaskModal(false)}
+          ></button>
         </div>
 
         <form onSubmit={handleCreateTask}>
           <div className="modal-body">
-            <label>Select Project</label>
+
+            {/* Select Project */}
+            <label className="form-label">Select Project</label>
             <select
-              className="form-control"
+              className="form-control mb-3"
               value={newTask.project}
-              onChange={(e) => setNewTask({ ...newTask, project: e.target.value })}
+              onChange={(e) =>
+                setNewTask({ ...newTask, project: e.target.value })
+              }
             >
               <option value="">Select Project</option>
               {projects.map((p) => (
-                <option key={p._id} value={p._id}>{p.name}</option>
+                <option key={p._id} value={p._id}>
+                  {p.name}
+                </option>
               ))}
             </select>
 
-            <label>Task Name</label>
+            {/* Select Team */}
+            <label className="form-label">Select Team</label>
+            <select
+              className="form-control mb-3"
+              value={newTask.team}
+              onChange={(e) =>
+                setNewTask({ ...newTask, team: e.target.value })
+              }
+            >
+              <option value="">Select Team</option>
+              {teams.map((team) => (
+                <option key={team._id} value={team._id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Task Name */}
+            <label className="form-label">Task Name</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control mb-3"
+              placeholder="Enter Task Name"
               value={newTask.name}
-              onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+              onChange={(e) =>
+                setNewTask({ ...newTask, name: e.target.value })
+              }
+            />
+
+            {/* Time to complete */}
+            <label className="form-label">Time to Complete (Hours)</label>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Enter Hours"
+              value={newTask.timeToComplete}
+              onChange={(e) =>
+                setNewTask({ ...newTask, timeToComplete: e.target.value })
+              }
             />
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={() => setShowTaskModal(false)}>Cancel</button>
-            <button type="submit" className="btn btn-primary">Create</button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowTaskModal(false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary">
+              Create Task
+            </button>
           </div>
         </form>
       </div>
