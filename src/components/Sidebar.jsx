@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   };
 
   return (
-    <div className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
+    <div className={`sidebar ${!isOpen ? "collapsed" : ""} ${isOpen ? "open" : ""}`}>
       {/* Top Section */}
       <div className="top-section">
         <span className="logo">{isOpen && "workaasana"}</span>
