@@ -1,37 +1,18 @@
-// Project.jsx
 import React, { useEffect, useState } from "react";
-import "./Project.css";
 
 const API_BASE = "https://workaasana.vercel.app";
 
-export default function Project() {
-  const [projects, setProjects] = useState(() => {
-    const saved = localStorage.getItem("projects");
-    return saved ? JSON.parse(saved) : [];
-  });
+export default function ProjectPage() {
+  const [projects, setProjects] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem("tasks");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [loading, setLoading] = useState(true);
-
-  // FETCH DATA
   useEffect(() => {
-    if (projects.length && tasks.length) {
-      setLoading(false);
-      return;
-    }
-
     const fetchData = async () => {
       try {
-        const [projRes, taskRes] = await Promise.all([
-          fetch(`${API_BASE}/projects`),
-          fetch(`${API_BASE}/tasks`),
-        ]);
-
+        const projRes = await fetch(`${API_BASE}/projects`);
         const projData = await projRes.json();
+
+        const taskRes = await fetch(`${API_BASE}/tasks`);
         const taskData = await taskRes.json();
 
         setProjects(projData);
@@ -40,75 +21,84 @@ export default function Project() {
         localStorage.setItem("projects", JSON.stringify(projData));
         localStorage.setItem("tasks", JSON.stringify(taskData));
       } catch (error) {
-        console.error("API error:", error);
-      } finally {
-        setLoading(false);
+        const cachedProjects = localStorage.getItem("projects");
+        const cachedTasks = localStorage.getItem("tasks");
+        if (cachedProjects) setProjects(JSON.parse(cachedProjects));
+        if (cachedTasks) setTasks(JSON.parse(cachedTasks));
       }
     };
 
     fetchData();
   }, []);
 
-  // UPDATE STATUS + LOCALSTORAGE + TRIGGER DASHBOARD REFRESH
-  const handleStatusChange = async (id, newStatus) => {
-    setProjects((prev) => {
-      const updated = prev.map((p) =>
-        p._id === id ? { ...p, status: newStatus } : p
-      );
+  const refreshTasks = async () => {
+    const res = await fetch(`${API_BASE}/tasks`);
+    const data = await res.json();
+    setTasks(data);
+    localStorage.setItem("tasks", JSON.stringify(data));
+  };
 
-      localStorage.setItem("projects", JSON.stringify(updated));
-      localStorage.setItem("dataUpdated", Date.now()); // 🔁 triggers Dashboard
-      return updated;
-    });
-
+  const handleStatusChange = async (id, status) => {
     try {
       const res = await fetch(`${API_BASE}/projects/${id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ status }),
       });
 
-      if (!res.ok) {
-        alert("Failed to update backend");
-      }
-    } catch (err) {
-      alert("Backend error — saved locally only");
+      const updated = await res.json();
+      setProjects((prev) =>
+        prev.map((p) => (p._id === id ? { ...p, status: updated.status } : p))
+      );
+
+      localStorage.setItem("projects", JSON.stringify(projects));
+    } catch (error) {
+      console.error("Failed to update status:", error);
     }
   };
 
-  if (loading) return <h3>Loading...</h3>;
-
   return (
-    <div className="table-container">
-      <div className="table-header">
-        <h2>Projects</h2>
-      </div>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">Projects</h1>
 
-      <table className="project-table">
+      <table className="w-full border-separate border-spacing-y-3">
         <thead>
-          <tr>
-            <th>PROJECT</th>
-            <th>TASKS</th>
-            <th>STATUS</th>
+          <tr className="text-gray-600 text-sm font-semibold">
+            <th className="text-left px-2">PROJECT</th>
+            <th className="text-center px-2">TASKS</th>
+            <th className="text-center px-2">STATUS</th>
           </tr>
         </thead>
 
         <tbody>
-          {projects.map((p) => {
-            const projectTasks = tasks.filter((t) => t.projectId === p._id);
+          {projects.map((project) => {
+            const taskCount = tasks.filter(
+              (task) => task?.project?._id === project._id
+            ).length;
 
             return (
-              <tr key={p._id}>
-                <td>{p.name}</td>
-                <td>{projectTasks.length}</td>
-                <td>
+              <tr
+                key={project._id}
+                className="bg-white shadow-sm rounded-lg"
+              >
+                <td className="px-4 py-4 rounded-l-lg text-[15px]">
+                  {project.name}
+                </td>
+
+                <td className="px-4 py-4 text-center text-[15px]">
+                  {taskCount}
+                </td>
+
+                <td className="px-4 py-4 text-center rounded-r-lg">
                   <select
-                    value={p.status || "In Progress"}
-                    className="status-select"
-                    onChange={(e) => handleStatusChange(p._id, e.target.value)}
+                    value={project.status}
+                    onChange={(e) =>
+                      handleStatusChange(project._id, e.target.value)
+                    }
+                    className="px-3 py-2 border rounded-md bg-white text-[14px]"
                   >
-                    <option>In Progress</option>
-                    <option>Completed</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
                   </select>
                 </td>
               </tr>
