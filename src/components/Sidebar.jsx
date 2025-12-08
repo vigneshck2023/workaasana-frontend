@@ -6,6 +6,7 @@ import {
   FaUsers,
   FaChartBar,
   FaCog,
+  FaUserCircle
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
@@ -17,6 +18,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <div className={`sidebar ${!isOpen ? "collapsed" : ""} ${isOpen ? "open" : ""}`}>
+      
       {/* Top Section */}
       <div className="top-section">
         <span className="logo">{isOpen && "workaasana"}</span>
@@ -37,7 +39,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </NavLink>
 
         <NavLink
-        to="/projects"
+          to="/projects"
           className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
           data-tooltip="Projects"
         >
@@ -70,6 +72,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         >
           <FaCog className="icon" />
           <span>Settings</span>
+        </NavLink>
+      </div>
+
+      {/* Bottom Account Section */}
+      <div className="bottom-menu">
+        <NavLink
+          to="/account"
+          className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
+          data-tooltip="Account"
+        >
+          <FaUserCircle className="icon" />
+          <span>Account</span>
         </NavLink>
       </div>
     </div>

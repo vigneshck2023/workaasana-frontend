@@ -66,6 +66,15 @@
   gap: 8px;
 }
 
+/* BOTTOM ACCOUNT ITEM  */
+.bottom-menu {
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .menu-item {
   display: flex;
   align-items: center;
@@ -96,6 +105,7 @@
   margin-right: 10px;
 }
 
+/* COLLAPSED - HIDE LABELS */
 .sidebar.collapsed .menu-item span {
   display: none;
 }
@@ -105,7 +115,7 @@
   padding: 12px 0;
 }
 
-/* TOOLTIP FOR COLLAPSED MODE */
+/* TOOLTIP IN COLLAPSED MODE */
 .sidebar.collapsed .menu-item:hover::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -134,6 +144,7 @@
   margin-left: 70px;
 }
 
+/* RESPONSIVE - TABLET */
 @media (max-width: 768px) {
   .sidebar {
     width: 200px;
@@ -153,7 +164,7 @@
   }
 }
 
-/* SMALLER MOBILE */
+/* RESPONSIVE - MOBILE */
 @media (max-width: 480px) {
   .sidebar {
     width: 180px;
