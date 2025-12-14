@@ -110,3 +110,29 @@
 .signup-link:hover {
   text-decoration: underline;
 }
+
+/* Continue without login button */
+.guest-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 14px;
+  background: linear-gradient(135deg, #f8fafc, #eef2f7);
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.25s ease;
+}
+
+.guest-btn:hover {
+  background: linear-gradient(135deg, #eef2f7, #e2e8f0);
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+.guest-btn:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}

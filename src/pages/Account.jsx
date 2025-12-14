@@ -1,55 +1,72 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./Login.css"; // reuse your login styling
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
-export default function Account() {
-  // state to show / hide password
+export default function Account({ setIsLoggedIn, setUserName }) {
+  const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (!name.trim()) {
+      alert("Please enter your name");
+      return;
+    }
+
+    setUserName(name);
+    setIsLoggedIn(true);
+
+    // Navigate to dashboard
+    navigate("/dashboard");
+  };
+
+  const handleGuestLogin = () => {
+    setUserName("Guest User");
+    setIsLoggedIn(true);
+
+    // Navigate to dashboard
+    navigate("/dashboard");
+  };
 
   return (
     <div className="login-container">
-      {/* card */}
       <div className="login-card">
-
-        {/* title */}
         <h2 className="title">Log in to your account</h2>
-        <p className="subtitle">Please enter your details.</p>
+        <p className="subtitle">Please enter your details</p>
 
-        {/* form */}
-        <form className="login-form">
+        <form className="login-form" onSubmit={handleLogin}>
+          <label>Name</label>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-          {/* email field */}
-          <label>Email</label>
-          <input type="email" placeholder="Enter your email" />
-
-          {/* password field */}
           <label>Password</label>
           <div className="password-wrapper">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
             />
-
-            {/* eye icon to toggle password visibility */}
             <span
               className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? "🙈" : "👁️"}
+              {showPassword ? <FiEyeOff /> : <FiEye />}
             </span>
           </div>
 
-          {/* login button */}
           <button className="login-btn">Sign in</button>
         </form>
 
-        {/* sign up link */}
-        <p className="signup-text">
-          Don’t have an account?{" "}
-          <Link to="/signup" className="signup-link">
-            Create one
-          </Link>
-        </p>
+        {/* Continue without login */}
+        <button className="guest-btn" onClick={handleGuestLogin}>
+          Continue without login
+        </button>
       </div>
     </div>
   );
